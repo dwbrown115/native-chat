@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, TextInput, Pressable, View, Text } from "react-native";
 
 // import { }
-
-
+import ImageInput from "@/components/ImageInput";
 import { ECDH_AESGCM } from "@/helpers";
 
 export default function TabTwoScreen() {
@@ -13,6 +12,7 @@ export default function TabTwoScreen() {
   const [sharedSecret, setSharedSecret] = useState<any>(null);
   const [encryptedText, setEncryptedText] = useState<string>("");
   const [decryptedText, setDecryptedText] = useState<string>("");
+  const [imageArray, setImageArray] = useState<any>([]);
 
   async function generateKeys() {
     // const iv1 = await ecdh_aesgcm.generateIv();
@@ -52,6 +52,10 @@ export default function TabTwoScreen() {
     setDecryptedText(decryptedText);
   }
 
+  async function handleExportImages(images: any) {
+    console.log("Images:", images);
+  }
+
   return (
     <View style={styles.container}>
       <Pressable onPress={generateKeys}>
@@ -76,6 +80,8 @@ export default function TabTwoScreen() {
         <Text style={styles.button}>Decrypt</Text>
       </Pressable>
       <Text>Decrypted text: {decryptedText}</Text>
+
+      <ImageInput exportImages={handleExportImages} />
     </View>
   );
 }
