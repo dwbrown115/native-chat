@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, TextInput, Pressable, View, Text } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  Pressable,
+  View,
+  Text,
+  Image,
+  ScrollView,
+} from "react-native";
 
 // import { }
 import ImageInput from "@/components/ImageInput";
 import { ECDH_AESGCM } from "@/helpers";
+import { set } from "firebase/database";
 
 export default function TabTwoScreen() {
   const ecdh_aesgcm = new ECDH_AESGCM();
@@ -53,36 +62,128 @@ export default function TabTwoScreen() {
   }
 
   async function handleExportImages(images: any) {
-    console.log("Images:", images);
+    images.forEach(async (image: any) => {
+      // const base64 = await ecdh_aesgcm.convertImageToBase64(image);
+      // console.log("Base64:", base64);
+      try {
+        const encryptedImage = await ecdh_aesgcm.encryptMessage(
+          sharedSecret,
+          image
+        );
+        const decryptedImage = await ecdh_aesgcm.decryptMessage(
+          sharedSecret,
+          encryptedImage
+        );
+        setImageArray([...imageArray, decryptedImage]);
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    });
+    // return images;
+    // setImageArray(images);
+    // console.log("Images:", images);
+    // console.log("Images:", images);
+    // setImageArray(images);
+    // const ImageArray: any[] = [];
+    // images.forEach(async (image: any) => {
+    //   console.log("Image:", image);
+    // const base64 = await ecdh_aesgcm.convertImageToBase64(image.uri);
+    // console.log("Base64:", base64);
+    // try {
+    //   const encryptedImage = await ecdh_aesgcm.encryptMessage(
+    //     sharedSecret,
+    //     image
+    //   );
+    //   // console.log("Encrypted Image:", encryptedImage);
+    //   const decryptedImage = await ecdh_aesgcm.decryptMessage(
+    //     sharedSecret,
+    //     encryptedImage
+    //   );
+    //   console.log("Decrypted Image:", decryptedImage);
+    //   ImageArray.push(decryptedImage);
+    //   // setImageArray(ImageArray);
+    // } catch (error) {
+    //   console.log("Error:", error);
+    // }
+    // ImageArray.push(image);
+    // setImageArray([...imageArray, image]);
+    // });
+    // for (let i = 0; i < images.length; i++) {
+    //   const image = images[i];
+    //   // console.log(images.length, i, image)
+    //   ImageArray.push(image);
+
+    //   // console.log("Image:", image);
+    //   // const base64 = await ecdh_aesgcm.convertImageToBase64(image.uri);
+    //   // console.log("Base64:", base64);
+    //   // try {
+    //   //   const encryptedImage = await ecdh_aesgcm.encryptMessage(
+    //   //     sharedSecret,
+    //   //     image
+    //   //   );
+    //   //   // console.log("Encrypted Image:", encryptedImage);
+    //   //   const decryptedImage = await ecdh_aesgcm.decryptMessage(
+    //   //     sharedSecret,
+    //   //     encryptedImage
+    //   //   );
+    //   //   // ImageArray.push(decryptedImage);
+    //   //   // console.log("Decrypted Image Array:", ImageArray);
+    //   //   //  setImageArray([...imageArray, decryptedImage]);
+    //   // } catch (error) {
+    //   //   console.log("Error:", error);
+    //   // }
+    // }
+    // console.log("Image Array:", ImageArray);
+    // setImageArray(ImageArray);
   }
 
-  return (
-    <View style={styles.container}>
-      <Pressable onPress={generateKeys}>
-        <Text style={styles.button}>Generate Keys</Text>
-      </Pressable>
-      <TextInput
-        style={{
-          height: 40,
-          borderColor: "gray",
-          borderWidth: 1,
-          padding: 5,
-          margin: 5,
-        }}
-        placeholder="Enter text to encrypt"
-        onChangeText={(text) => setInputText(text)}
-      />
-      <Pressable onPress={handleSubmit}>
-        <Text style={styles.button}>Encrypt</Text>
-      </Pressable>
-      <Text>Encrypted text: {encryptedText}</Text>
-      <Pressable onPress={decrypt}>
-        <Text style={styles.button}>Decrypt</Text>
-      </Pressable>
-      <Text>Decrypted text: {decryptedText}</Text>
+  useEffect(() => {
+    console.log("Image Array:", imageArray);
+  }, [imageArray]);
 
-      <ImageInput exportImages={handleExportImages} />
-    </View>
+  useEffect(() => {
+    generateKeys();
+  }, []);
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <Pressable onPress={generateKeys}>
+          <Text style={styles.button}>Generate Keys</Text>
+        </Pressable>
+        <TextInput
+          style={{
+            height: 40,
+            borderColor: "gray",
+            borderWidth: 1,
+            padding: 5,
+            margin: 5,
+          }}
+          placeholder="Enter text to encrypt"
+          onChangeText={(text) => setInputText(text)}
+        />
+        <Pressable onPress={handleSubmit}>
+          <Text style={styles.button}>Encrypt</Text>
+        </Pressable>
+        <Text>Encrypted text: {encryptedText}</Text>
+        <Pressable onPress={decrypt}>
+          <Text style={styles.button}>Decrypt</Text>
+        </Pressable>
+        <Text>Decrypted text: {decryptedText}</Text>
+        <ImageInput exportImages={handleExportImages} />
+        {imageArray.map((image: any, index: number) => (
+          <Image
+            key={index}
+            source={{ uri: image }}
+            style={{ width: 200, height: 200 }}
+          />
+        ))}
+        {/* <Image
+        source={{ uri: imageArray[0]?.uri }}
+        style={{ width: 200, height: 200 }}
+      /> */}
+      </View>
+    </ScrollView>
   );
 }
 

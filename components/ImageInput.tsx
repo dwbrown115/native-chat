@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 export default function ImageInput({ exportImages }: any) {
-  const [images, setImages] = useState<any>([]);
+  // const [images, setImages] = useState<any>([]);
+
+  useEffect(() => {
+    // setImages([]);
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("Image Input:", images);
+  // }, [images]);
 
   async function handleImageInput() {
     try {
@@ -17,15 +25,24 @@ export default function ImageInput({ exportImages }: any) {
 
       if (!result.canceled) {
         // Extract URIs from the result.assets array
-        const image = result.assets.map((asset) => asset.uri);
-        setImages((prevImages: any) => [...prevImages, ...image]);
+        const ImageArray: any = [];
+        result.assets.map((asset) => ImageArray.push(asset.uri));
+        exportImages(ImageArray);
+        // setImages((prevImages: any) => [...prevImages, ...image]);
+        // return image;
+        // exportImages(image);
       }
     } catch (error) {
       console.error(error);
     }
+    // exportImageArray();
   }
 
-  exportImages(images);
+  async function exportImageArray() {
+    // console.log("Exporting Images:", images);
+    // const ima
+    // exportImages(images);
+  }
 
   return (
     <View>
