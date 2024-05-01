@@ -20,39 +20,44 @@ export default function AuthLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarStyle: {
+          display: "none",
+        },
+        // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        // headerShown: useClientOnlyValue(false, true),
       }}
     >
       <Tabs.Screen
-        name="login"
+        name="index"
         options={{
+          headerShown: false,
+          // tabBarShown: false,
           title: "Login",
-          tabBarIcon: ({ color }) => <AuthBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/signup" asChild>
-              <Pressable>
-                {/* {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )} */}
-                <Text style={{ color: "blue", marginRight: 10 }}>Signup</Text>
-              </Pressable>
-            </Link>
-          ),
+          // tabBarIcon: ({ color }) => <AuthBarIcon name="code" color={color} />,
+          // headerRight: () => (
+          //   <Link href="/signup" asChild>
+          //     <Pressable>
+          //       {/* {({ pressed }) => (
+          //         <FontAwesome
+          //           name="info-circle"
+          //           size={25}
+          //           color={Colors[colorScheme ?? "light"].text}
+          //           style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+          //         />
+          //       )} */}
+          //       <Text style={{ color: "blue", marginRight: 10 }}>Signup</Text>
+          //     </Pressable>
+          //   </Link>
+          // ),
         }}
       />
       <Tabs.Screen
         name="signup"
         options={{
           title: "Signup",
-          tabBarIcon: ({ color }) => <AuthBarIcon name="code" color={color} />,
+          headerShown: false,
         }}
       />
     </Tabs>

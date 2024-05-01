@@ -1,11 +1,13 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
+import { Link, Tabs, router } from "expo-router";
 import { Pressable, Text } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+
+import { logOut } from "@/firebase";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -18,6 +20,11 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  function handleLogout() {
+    logOut();
+    router.push("/");
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -28,14 +35,13 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="one"
         options={{
           title: "Tab One",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
-            <Link href="/login" asChild>
-              <Pressable>
-                {/* {({ pressed }) => (
+            <Pressable onPress={handleLogout}>
+              {/* {({ pressed }) => (
                   <FontAwesome
                     name="info-circle"
                     size={25}
@@ -43,9 +49,8 @@ export default function TabLayout() {
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )} */}
-                <Text style={{ color: "blue", marginRight: 10 }}>Login</Text>
-              </Pressable>
-            </Link>
+              <Text style={{ color: "blue", marginRight: 10 }}>Log Out</Text>
+            </Pressable>
           ),
         }}
       />

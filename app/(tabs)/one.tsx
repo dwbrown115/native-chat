@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, Pressable, View, Text } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  Pressable,
+  View,
+  Text,
+  ScrollView,
+} from "react-native";
 
 import { AESGCM } from "@/helpers";
+import VerifyEmailBar from "@/components/verifyEmailBar";
 
 export default function TabOneScreen() {
   const aesGcm = new AESGCM();
@@ -37,38 +45,41 @@ export default function TabOneScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>AES-GCM Encryption</Text>
-      <View style={{ margin: 5 }}>
-        <Pressable style={styles.button} onPress={generateKey}>
-          <Text style={{ color: "white" }}>Generate Key</Text>
-        </Pressable>
+    <ScrollView>
+      <VerifyEmailBar />
+      <View style={styles.container}>
+        <Text style={styles.title}>AES-GCM Encryption</Text>
+        <View style={{ margin: 5 }}>
+          <Pressable style={styles.button} onPress={generateKey}>
+            <Text style={{ color: "white" }}>Generate Key</Text>
+          </Pressable>
+        </View>
+        <Text style={{ margin: 5 }}>Key: {JSON.stringify(key)}</Text>
+        <TextInput
+          style={{
+            height: 40,
+            borderColor: "gray",
+            borderWidth: 1,
+            padding: 5,
+            margin: 5,
+          }}
+          placeholder="Enter text to encrypt"
+          onChangeText={(text) => setInputText(text)}
+        />
+        <View style={{ margin: 5 }}>
+          <Pressable style={styles.button} onPress={handleSubmit}>
+            <Text style={{ color: "white" }}>Encrypt</Text>
+          </Pressable>
+        </View>
+        <Text>Encrypted text: {encryptedText}</Text>
+        <View style={{ margin: 5 }}>
+          <Pressable style={styles.button} onPress={decrypt}>
+            <Text style={{ color: "white" }}>Decrypt</Text>
+          </Pressable>
+        </View>
+        <Text>Decrypted text: {decryptedText}</Text>
       </View>
-      <Text style={{ margin: 5 }}>Key: {JSON.stringify(key)}</Text>
-      <TextInput
-        style={{
-          height: 40,
-          borderColor: "gray",
-          borderWidth: 1,
-          padding: 5,
-          margin: 5,
-        }}
-        placeholder="Enter text to encrypt"
-        onChangeText={(text) => setInputText(text)}
-      />
-      <View style={{ margin: 5 }}>
-        <Pressable style={styles.button} onPress={handleSubmit}>
-          <Text style={{ color: "white" }}>Encrypt</Text>
-        </Pressable>
-      </View>
-      <Text>Encrypted text: {encryptedText}</Text>
-      <View style={{ margin: 5 }}>
-        <Pressable style={styles.button} onPress={decrypt}>
-          <Text style={{ color: "white" }}>Decrypt</Text>
-        </Pressable>
-      </View>
-      <Text>Decrypted text: {decryptedText}</Text>
-    </View>
+    </ScrollView>
   );
 }
 
