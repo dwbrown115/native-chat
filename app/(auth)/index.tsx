@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
-import { TextInput, Pressable, View, Text } from "react-native";
+import { TextInput, Pressable, View, Text, ScrollView } from "react-native";
 import { getAuth } from "firebase/auth";
 
 import { signIn } from "@/firebase";
@@ -48,39 +48,41 @@ export default function LoginScreen() {
   }, []);
 
   return (
-    <View style={AuthStyles.container}>
-      <Text style={AuthStyles.title}>Login</Text>
-      <TextInput
-        style={AuthStyles.input}
-        placeholder="Email:"
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-        }}
-      />
-      <View style={AuthStyles.wrapper}>
+    <ScrollView>
+      <View style={AuthStyles.container}>
+        <Text style={AuthStyles.title}>Login</Text>
         <TextInput
-          secureTextEntry={secureTextEntry}
           style={AuthStyles.input}
-          placeholder="Password:"
-          value={password}
+          placeholder="Email:"
+          value={email}
           onChangeText={(text) => {
-            setPassword(text);
+            setEmail(text);
           }}
         />
-        <Pressable style={AuthStyles.show} onPress={handleSecureTextEntry}>
-          <Text selectable={false}>Show</Text>
-        </Pressable>
+        <View style={AuthStyles.wrapper}>
+          <TextInput
+            secureTextEntry={secureTextEntry}
+            style={AuthStyles.input}
+            placeholder="Password:"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
+          />
+          <Pressable style={AuthStyles.show} onPress={handleSecureTextEntry}>
+            <Text selectable={false}>Show</Text>
+          </Pressable>
+        </View>
+        <View style={AuthStyles.wrapper}>
+          <Pressable onPress={handleLogin} style={AuthStyles.button}>
+            <Text style={{ color: "white" }}>Login</Text>
+          </Pressable>
+          <Pressable onPress={handleSignup} style={AuthStyles.button}>
+            <Text style={{ color: "white" }}>Signup</Text>
+          </Pressable>
+        </View>
+        <Text style={AuthStyles.error}>{error}</Text>
       </View>
-      <View style={AuthStyles.wrapper}>
-        <Pressable onPress={handleLogin} style={AuthStyles.button}>
-          <Text style={{ color: "white" }}>Login</Text>
-        </Pressable>
-        <Pressable onPress={handleSignup} style={AuthStyles.button}>
-          <Text style={{ color: "white" }}>Signup</Text>
-        </Pressable>
-      </View>
-      <Text style={AuthStyles.error}>{error}</Text>
-    </View>
+    </ScrollView>
   );
 }

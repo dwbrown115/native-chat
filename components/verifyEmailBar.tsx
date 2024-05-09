@@ -13,8 +13,18 @@ export default function VerifyEmailBar() {
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
+      // console.log("User", user);
+      if (user) {
+        console.log("User is signed in");
+      } else {
+        console.log("No user signed in");
+      }
       if (user?.emailVerified === true) {
         setEmailVerified(true);
+        console.log("Email verified");
+      } else {
+        setEmailVerified(false);
+        console.log("Email not verified");
       }
     });
   }, [auth.currentUser]);
@@ -24,6 +34,8 @@ export default function VerifyEmailBar() {
       if (user) {
         await sendEmailVerification(auth.currentUser);
         setEmailSent("Email sent!");
+      } else {
+        setEmailSent("No user found");
       }
     } catch (error) {
       console.log(error);

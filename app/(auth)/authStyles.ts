@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 const AuthStyles = StyleSheet.create({
   container: {
@@ -7,7 +7,8 @@ const AuthStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0f0",
     flexDirection: "column",
-    width: "11%",
+    width: Platform.OS === "web" ? "15%" : "50%",
+    marginTop: 150,
     marginLeft: "auto",
     marginRight: "auto",
   },

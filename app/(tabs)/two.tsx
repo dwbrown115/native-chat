@@ -12,6 +12,7 @@ import { getFirestore, doc } from "firebase/firestore";
 
 // import { }
 import ImageInput from "@/components/ImageInput";
+import MobileTextInput from "@/components/mobileTextInput";
 import { ECDH_AESGCM } from "@/helpers";
 import { firebase_app, runTransaction, getFieldFromDocument } from "@/firebase";
 import { makeId } from "@/helpers";
@@ -116,6 +117,10 @@ export default function TabTwoScreen() {
     );
   }
 
+  function handleMobileTextInput(text: string) {
+    console.log("Mobile Text Input:", text);
+  }
+
   useEffect(() => {
     console.log("Image Array:", imageArray);
   }, [imageArray]);
@@ -160,6 +165,7 @@ export default function TabTwoScreen() {
         <Pressable onPress={handleRunTransaction}>
           <Text style={styles.button}>Run Transaction</Text>
         </Pressable>
+        <MobileTextInput exportText={handleMobileTextInput} />
         {/* <Image
         source={{ uri: imageArray[0]?.uri }}
         style={{ width: 200, height: 200 }}
