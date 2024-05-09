@@ -11,11 +11,16 @@ import {
 import { getFirestore, doc } from "firebase/firestore";
 
 // import { }
-import ImageInput from "@/components/ImageInput";
-import MobileTextInput from "@/components/mobileTextInput";
-import { ECDH_AESGCM } from "@/helpers";
+import { ImageInput, MobileTextInput } from "@/components";
+import {
+  ECDH_AESGCM,
+  makeId,
+  initializeChatSender,
+  initializeChatReciver,
+  completeInitializeChat,
+} from "@/helpers";
 import { firebase_app, runTransaction, getFieldFromDocument } from "@/firebase";
-import { makeId } from "@/helpers";
+import { storeDataDB, fetchDataDB, deleteDataDB } from "@/localStorage";
 
 export default function TabTwoScreen() {
   const db = getFirestore(firebase_app);
@@ -121,12 +126,86 @@ export default function TabTwoScreen() {
     console.log("Mobile Text Input:", text);
   }
 
+  function handleWriteDBTest() {
+    const peopleData = [
+      { name: "Alice", age: 30 },
+      { name: "Bob", age: 25 },
+      { name: "Charlie", age: 28 },
+    ];
+
+    // storeDataDB("myDatabase", "peopleStore", "name", peopleData);
+    // deleteDataDB("myDatabase", "peopleStore", "name", "Charlie");
+
+    fetchDataDB(
+      "localStorage",
+      "chatRooms",
+      "chatRoomId",
+      "9LidR9RVEzb7D2MzFzmh"
+    )
+      .then((data: any) => {
+        console.log(
+          "Private Key Fetched from Local Storage",
+          // data["privateKey"]
+          data
+        );
+        //   return data["senderPublicKey"];
+        // privateKeyArray.push(data["privateKey"]);
+      })
+      .catch((error) => {
+        console.error("Error Fetching Private Key from Local Storage", error);
+      });
+
+    // deleteDataDB(
+    //   "localStorage",
+    //   "chatRooms",
+    //   "chatRoomId",
+    //   "9LidR9RVEzb7D2MzFzmh"
+    // );
+
+    // fetchDataDB(
+    //   "myDatabase",
+    //   "peopleStore",
+    //   "name",
+    //   "Bob",
+    //   (fetchedData: any) => {
+    //     console.log("Fetched data:", fetchedData["name"]);
+    //   }
+    // );
+
+    // console.log("Fetched Data:", data);
+    // fetchDataDB("myDatabase", "peopleStore", "name", "Bob")
+    //   .then((data) => {
+    //     console.log("Fetched Data:", data);
+    //   })
+    //   .catch((error) => {
+    //     console.log("Error:", error);
+    //   });
+  }
+
+  function handleInitailizeChatSender() {
+    initializeChatSender(
+      "PIGC4UTHEdOw5bS4RgJjBQjVTEo2",
+      "s6GTjM8CV4YAR1AKpyEdiYCYaX52"
+    );
+  }
+
+  function handleInitializeChatReciver() {
+    initializeChatReciver("9LidR9RVEzb7D2MzFzmh");
+  }
+
+  function handleCompleteInitializeChat() {
+    completeInitializeChat(
+      "9LidR9RVEzb7D2MzFzmh",
+      "PIGC4UTHEdOw5bS4RgJjBQjVTEo2"
+    );
+  }
+
   useEffect(() => {
-    console.log("Image Array:", imageArray);
+    // console.log("Image Array:", imageArray);
   }, [imageArray]);
 
   useEffect(() => {
-    generateKeys();
+    // generateKeys();
   }, []);
 
   return (
@@ -166,6 +245,18 @@ export default function TabTwoScreen() {
           <Text style={styles.button}>Run Transaction</Text>
         </Pressable>
         <MobileTextInput exportText={handleMobileTextInput} />
+        <Pressable onPress={handleWriteDBTest}>
+          <Text style={styles.button}>Write DB Test</Text>
+        </Pressable>
+        <Pressable onPress={handleInitailizeChatSender}>
+          <Text style={styles.button}>Initialize Chat Sender</Text>
+        </Pressable>
+        <Pressable onPress={handleInitializeChatReciver}>
+          <Text style={styles.button}>Initialize Chat Reciver</Text>
+        </Pressable>
+        <Pressable onPress={handleCompleteInitializeChat}>
+          <Text style={styles.button}>Complete Initialize Chat</Text>
+        </Pressable>
         {/* <Image
         source={{ uri: imageArray[0]?.uri }}
         style={{ width: 200, height: 200 }}

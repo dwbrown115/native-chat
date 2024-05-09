@@ -59,6 +59,19 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerRight: () => (
+            <Pressable onPress={handleLogout}>
+              {/* {({ pressed }) => (
+                  <FontAwesome
+                    name="info-circle"
+                    size={25}
+                    color={Colors[colorScheme ?? 'light'].text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )} */}
+              <Text style={{ color: "blue", marginRight: 10 }}>Log Out</Text>
+            </Pressable>
+          ),
         }}
       />
     </Tabs>

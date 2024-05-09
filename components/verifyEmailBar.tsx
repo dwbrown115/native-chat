@@ -21,7 +21,7 @@ export default function VerifyEmailBar() {
       }
       if (user?.emailVerified === true) {
         setEmailVerified(true);
-        console.log("Email verified");
+        console.log("Email is verified");
       } else {
         setEmailVerified(false);
         console.log("Email not verified");

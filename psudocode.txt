@@ -1,0 +1,23 @@
+(initialize chatroom: sender) {
+    generates secret key, public key and chatroom id
+    runs transaction to save chatroom id to both users
+    creates chatroom with chatroom id
+    sends their public key the chatroom
+    saves secret key to local storage under chatroom id
+}
+
+(initialize chatroom: receiver) {
+    receives sender public key from chatroom
+    generates secret key and public key
+    saves public key to chatroom
+    generates shared secret using sender public key and receiver private key
+    saves shared secret to local storage under chatroom id
+}
+
+(finalize chatroom: sender) {
+    retrives secret key from local storage
+    retrives receiver public key from chatroom
+    generates shared secret using sender private key and receiver public key
+    saves shared secret to local storage under chatroom id
+    now can send and recive messages
+}
