@@ -8,13 +8,16 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import { getFirestore, doc } from "firebase/firestore";
 
 // import { }
 import ImageInput from "@/components/ImageInput";
 import { ECDH_AESGCM } from "@/helpers";
-import { set } from "firebase/database";
+import { firebase_app, runTransaction, getFieldFromDocument } from "@/firebase";
+import { makeId } from "@/helpers";
 
 export default function TabTwoScreen() {
+  const db = getFirestore(firebase_app);
   const ecdh_aesgcm = new ECDH_AESGCM();
 
   const [inputText, setInputText] = useState<string>("");
@@ -79,62 +82,38 @@ export default function TabTwoScreen() {
         console.log("Error:", error);
       }
     });
-    // return images;
-    // setImageArray(images);
-    // console.log("Images:", images);
-    // console.log("Images:", images);
-    // setImageArray(images);
-    // const ImageArray: any[] = [];
-    // images.forEach(async (image: any) => {
-    //   console.log("Image:", image);
-    // const base64 = await ecdh_aesgcm.convertImageToBase64(image.uri);
-    // console.log("Base64:", base64);
-    // try {
-    //   const encryptedImage = await ecdh_aesgcm.encryptMessage(
-    //     sharedSecret,
-    //     image
-    //   );
-    //   // console.log("Encrypted Image:", encryptedImage);
-    //   const decryptedImage = await ecdh_aesgcm.decryptMessage(
-    //     sharedSecret,
-    //     encryptedImage
-    //   );
-    //   console.log("Decrypted Image:", decryptedImage);
-    //   ImageArray.push(decryptedImage);
-    //   // setImageArray(ImageArray);
-    // } catch (error) {
-    //   console.log("Error:", error);
-    // }
-    // ImageArray.push(image);
-    // setImageArray([...imageArray, image]);
-    // });
-    // for (let i = 0; i < images.length; i++) {
-    //   const image = images[i];
-    //   // console.log(images.length, i, image)
-    //   ImageArray.push(image);
+  }
 
-    //   // console.log("Image:", image);
-    //   // const base64 = await ecdh_aesgcm.convertImageToBase64(image.uri);
-    //   // console.log("Base64:", base64);
-    //   // try {
-    //   //   const encryptedImage = await ecdh_aesgcm.encryptMessage(
-    //   //     sharedSecret,
-    //   //     image
-    //   //   );
-    //   //   // console.log("Encrypted Image:", encryptedImage);
-    //   //   const decryptedImage = await ecdh_aesgcm.decryptMessage(
-    //   //     sharedSecret,
-    //   //     encryptedImage
-    //   //   );
-    //   //   // ImageArray.push(decryptedImage);
-    //   //   // console.log("Decrypted Image Array:", ImageArray);
-    //   //   //  setImageArray([...imageArray, decryptedImage]);
-    //   // } catch (error) {
-    //   //   console.log("Error:", error);
-    //   // }
-    // }
-    // console.log("Image Array:", ImageArray);
-    // setImageArray(ImageArray);
+  async function handleRunTransaction() {
+    const chatRoomId = makeId(20);
+
+    const senderRef = doc(db, `Users`, "PIGC4UTHEdOw5bS4RgJjBQjVTEo2");
+    const receiverRef = doc(db, `Users`, "s6GTjM8CV4YAR1AKpyEdiYCYaX52");
+    // console.log("Sender Ref:", senderRef);
+    // console.log("Receiver Ref:", receiverRef);
+    const senderChatRooms = await getFieldFromDocument(
+      senderRef,
+      "chatRooms",
+      []
+    );
+    const receiverChatRooms = await getFieldFromDocument(
+      receiverRef,
+      "chatRooms",
+      []
+    );
+    senderChatRooms.push(chatRoomId);
+    receiverChatRooms.push(chatRoomId);
+
+    console.log("Sender Chat Rooms:", senderChatRooms);
+    console.log("Receiver Chat Rooms:", receiverChatRooms);
+
+    runTransaction(
+      senderRef,
+      receiverRef,
+      { chatRooms: senderChatRooms },
+      { chatRooms: receiverChatRooms },
+      db
+    );
   }
 
   useEffect(() => {
@@ -178,6 +157,9 @@ export default function TabTwoScreen() {
             style={{ width: 200, height: 200 }}
           />
         ))}
+        <Pressable onPress={handleRunTransaction}>
+          <Text style={styles.button}>Run Transaction</Text>
+        </Pressable>
         {/* <Image
         source={{ uri: imageArray[0]?.uri }}
         style={{ width: 200, height: 200 }}
@@ -283,3 +265,60 @@ const styles = StyleSheet.create({
 //   sendPacket();
 //   generateSecret();
 // }
+
+// return images;
+// setImageArray(images);
+// console.log("Images:", images);
+// console.log("Images:", images);
+// setImageArray(images);
+// const ImageArray: any[] = [];
+// images.forEach(async (image: any) => {
+//   console.log("Image:", image);
+// const base64 = await ecdh_aesgcm.convertImageToBase64(image.uri);
+// console.log("Base64:", base64);
+// try {
+//   const encryptedImage = await ecdh_aesgcm.encryptMessage(
+//     sharedSecret,
+//     image
+//   );
+//   // console.log("Encrypted Image:", encryptedImage);
+//   const decryptedImage = await ecdh_aesgcm.decryptMessage(
+//     sharedSecret,
+//     encryptedImage
+//   );
+//   console.log("Decrypted Image:", decryptedImage);
+//   ImageArray.push(decryptedImage);
+//   // setImageArray(ImageArray);
+// } catch (error) {
+//   console.log("Error:", error);
+// }
+// ImageArray.push(image);
+// setImageArray([...imageArray, image]);
+// });
+// for (let i = 0; i < images.length; i++) {
+//   const image = images[i];
+//   // console.log(images.length, i, image)
+//   ImageArray.push(image);
+
+//   // console.log("Image:", image);
+//   // const base64 = await ecdh_aesgcm.convertImageToBase64(image.uri);
+//   // console.log("Base64:", base64);
+//   // try {
+//   //   const encryptedImage = await ecdh_aesgcm.encryptMessage(
+//   //     sharedSecret,
+//   //     image
+//   //   );
+//   //   // console.log("Encrypted Image:", encryptedImage);
+//   //   const decryptedImage = await ecdh_aesgcm.decryptMessage(
+//   //     sharedSecret,
+//   //     encryptedImage
+//   //   );
+//   //   // ImageArray.push(decryptedImage);
+//   //   // console.log("Decrypted Image Array:", ImageArray);
+//   //   //  setImageArray([...imageArray, decryptedImage]);
+//   // } catch (error) {
+//   //   console.log("Error:", error);
+//   // }
+// }
+// console.log("Image Array:", ImageArray);
+// setImageArray(ImageArray);

@@ -30,6 +30,7 @@ export default function SignUpScreen() {
           email,
           username,
           accountCreated: time,
+          chatRooms: [],
         };
         const result = await signUp(email, password, user);
         router.push("/one");

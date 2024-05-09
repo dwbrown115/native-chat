@@ -37,6 +37,16 @@ export default function LoginScreen() {
     setSecureTextEntry(!secureTextEntry);
   }
 
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        router.push("/one");
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   return (
     <View style={AuthStyles.container}>
       <Text style={AuthStyles.title}>Login</Text>
