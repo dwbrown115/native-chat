@@ -2,15 +2,12 @@ import { useEffect, useState } from "react";
 import { TextInput, Pressable, View, Text } from "react-native";
 import { router } from "expo-router";
 
-import { FIREBASE_API_KEY } from "../../config";
 import { signUp } from "@/firebase";
 import { isPasswordValid } from "@/helpers";
 
 import AuthStyles from "./authStyles";
-import { set } from "firebase/database";
 
 export default function SignUpScreen() {
-  const api_key = process.env.EXPO_FIREBASE_API_KEY;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -59,12 +56,6 @@ export default function SignUpScreen() {
 
   function handleSecureTextEntry2() {
     setSecureTextEntry2(!secureTextEntry2);
-  }
-
-  async function handleTest() {
-    console.log(FIREBASE_API_KEY);
-    // console.log(process.env.EXPO_FIREBASE_API_KEY);
-    // await fetch(api_key)
   }
 
   return (
@@ -123,9 +114,6 @@ export default function SignUpScreen() {
         </Pressable>
       </View>
       <Text style={AuthStyles.error}>{error}</Text>
-      <Pressable onPress={handleTest} style={AuthStyles.button}>
-        <Text style={{ color: "white" }}>Test</Text>
-      </Pressable>
     </View>
   );
 }

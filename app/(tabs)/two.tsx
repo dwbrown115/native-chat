@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { getFirestore, doc } from "firebase/firestore";
 
-// import { }
 import { ImageInput, MobileTextInput } from "@/components";
 import {
   ECDH_AESGCM,
@@ -23,7 +22,7 @@ import { firebase_app, runTransaction, getFieldFromDocument } from "@/firebase";
 import { storeDataDB, fetchDataDB, deleteDataDB } from "@/localStorage";
 
 export default function TabTwoScreen() {
-  const db = getFirestore(firebase_app);
+  // const db = getFirestore(firebase_app);
   const ecdh_aesgcm = new ECDH_AESGCM();
 
   const [inputText, setInputText] = useState<string>("");
@@ -93,33 +92,33 @@ export default function TabTwoScreen() {
   async function handleRunTransaction() {
     const chatRoomId = makeId(20);
 
-    const senderRef = doc(db, `Users`, "PIGC4UTHEdOw5bS4RgJjBQjVTEo2");
-    const receiverRef = doc(db, `Users`, "s6GTjM8CV4YAR1AKpyEdiYCYaX52");
+    // const senderRef = doc(db, `Users`, "PIGC4UTHEdOw5bS4RgJjBQjVTEo2");
+    // const receiverRef = doc(db, `Users`, "s6GTjM8CV4YAR1AKpyEdiYCYaX52");
     // console.log("Sender Ref:", senderRef);
     // console.log("Receiver Ref:", receiverRef);
-    const senderChatRooms = await getFieldFromDocument(
-      senderRef,
-      "chatRooms",
-      []
-    );
-    const receiverChatRooms = await getFieldFromDocument(
-      receiverRef,
-      "chatRooms",
-      []
-    );
-    senderChatRooms.push(chatRoomId);
-    receiverChatRooms.push(chatRoomId);
+    // const senderChatRooms = await getFieldFromDocument(
+    //   senderRef,
+    //   "chatRooms",
+    //   []
+    // );
+    // const receiverChatRooms = await getFieldFromDocument(
+    //   receiverRef,
+    //   "chatRooms",
+    //   []
+    // );
+    // senderChatRooms.push(chatRoomId);
+    // receiverChatRooms.push(chatRoomId);
 
-    console.log("Sender Chat Rooms:", senderChatRooms);
-    console.log("Receiver Chat Rooms:", receiverChatRooms);
+    // console.log("Sender Chat Rooms:", senderChatRooms);
+    // console.log("Receiver Chat Rooms:", receiverChatRooms);
 
-    runTransaction(
-      senderRef,
-      receiverRef,
-      { chatRooms: senderChatRooms },
-      { chatRooms: receiverChatRooms },
-      db
-    );
+    // runTransaction(
+    //   senderRef,
+    //   receiverRef,
+    //   { chatRooms: senderChatRooms },
+    //   { chatRooms: receiverChatRooms },
+    //   db
+    // );
   }
 
   function handleMobileTextInput(text: string) {

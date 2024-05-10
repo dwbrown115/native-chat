@@ -21,8 +21,8 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   function handleLogout() {
-    logOut();
     router.push("/");
+    logOut();
   }
 
   return (

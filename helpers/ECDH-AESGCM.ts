@@ -1,5 +1,3 @@
-import * as forge from "node-forge";
-
 export default class ECDH_AESGCM {
   async generateKeyPair() {
     const keyPair = await window.crypto.subtle.generateKey(
