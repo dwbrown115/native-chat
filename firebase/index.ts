@@ -5,6 +5,7 @@ export { default as databaseDeleteData } from "./database/databaseDeleteData";
 // export { default as checkForBackup } from "./firestore/checkForBackup";
 export { default as addData } from "./firestore/addData";
 export { default as runTransaction } from "./firestore/runTransaction";
+export { default as getCollection } from "./firestore/getCollection"
 export { default as getData } from "./firestore/getData";
 export { default as updateData } from "./firestore/updateData";
 export { default as deleteData } from "./firestore/deleteData";
