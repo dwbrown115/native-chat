@@ -26,6 +26,8 @@ export default function SignUpScreen() {
         const user = {
           email,
           username,
+          profilePicture:
+            "https://firebasestorage.googleapis.com/v0/b/native-chat-faa01.appspot.com/o/6525a08f1df98a2e3a545fe2ace4be47.jpg?alt=media&token=6fb35fea-8e2e-44f7-9d4d-f9bb214d754c",
           accountCreated: time,
           chatRooms: [],
         };
