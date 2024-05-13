@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import { router } from "expo-router";
 import { getFirestore, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
@@ -15,6 +16,7 @@ import {
   handleSearch,
   searchArrayForValue,
   findObjectByValue,
+  initializeChatSender,
 } from "@/helpers";
 import {
   runTransaction,
@@ -32,6 +34,7 @@ export default function TabThreeScreen() {
   const [friends, setFriends] = useState<any[]>([]);
   const [query, setQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [confirmDelete, setConfirmDelete] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
 
   async function grabUser(userId: string) {
@@ -41,9 +44,23 @@ export default function TabThreeScreen() {
       // setFriends(data.friends);
 
       grabFriends(data.friends);
+      const falseArray = Array.from(
+        { length: data.friends.length },
+        () => false
+      );
+      setConfirmDelete(falseArray);
       // console.log(data.friends);
     }
   }
+
+  function handleDelete(index: number, value: boolean) {
+    const updatedConfirmDelete = [...confirmDelete];
+    // console.log(updatedConfirmDelete)
+    updatedConfirmDelete[index] = value;
+    // console.log(updatedConfirmDelete)
+    setConfirmDelete(updatedConfirmDelete);
+  }
+
   async function search(query: string) {
     handleSearch(query, "users")
       .then((results) => {
@@ -69,12 +86,12 @@ export default function TabThreeScreen() {
       //    console.log(receiverRef)
       console.log("grabbing refs");
 
-      const senderFriends = await getFieldFromDocument(
+      const senderFriendsArray = await getFieldFromDocument(
         senderRef,
         "friends",
         []
       );
-      const receiverFriends = await getFieldFromDocument(
+      const receiverFriendsArray = await getFieldFromDocument(
         receiverRef,
         "friends",
         []
@@ -87,25 +104,32 @@ export default function TabThreeScreen() {
         userName: userName,
         userId: userId,
         confirmed: false,
+        chat: false,
+        chatRoomId: "",
       };
-      senderFriends.push(senderFriendData);
+      senderFriendsArray.push(senderFriendData);
+      console.log(senderFriendData, "senderFriendData");
 
       const receiverFriendData = {
         senderId: loggedInUser,
         username: loggedInUsername,
         userId: loggedInUser,
         confirmed: false,
+        chat: false,
+        chatRoomId: "",
       };
-      receiverFriends.push(receiverFriendData);
+      receiverFriendsArray.push(receiverFriendData);
 
-      console.log("pushed data to arrays");
+      // console.log("pushed data to arrays");
 
-      console.log("starting transaction");
+      // console.log("starting transaction");
+      // setFriends(...friends, senderFriendData);
+      friends.push(senderFriendData);
       await runTransaction(
         senderRef,
         receiverRef,
-        { friends: senderFriends },
-        { friends: receiverFriends },
+        { friends: senderFriendsArray },
+        { friends: receiverFriendsArray },
         db
       );
     }
@@ -122,7 +146,7 @@ export default function TabThreeScreen() {
         setFriends([]);
         setUserId(user.uid);
         grabUser(user.uid);
-        search("");
+        // search("");
       }
     });
   }, []);
@@ -138,6 +162,87 @@ export default function TabThreeScreen() {
       };
       setFriends((prev) => [...prev, friendData]);
     });
+  }
+
+  async function confirmFriend(userId: string) {
+    const senderRef = doc(db, "Users", loggedInUser);
+    const receiverRef = doc(db, "Users", userId);
+
+    const senderFriendsArray = await getFieldFromDocument(
+      senderRef,
+      "friends",
+      []
+    );
+    const receiverFriendsArray = await getFieldFromDocument(
+      receiverRef,
+      "friends",
+      []
+    );
+
+    const senderFriends = await senderFriendsArray.map((friend: any) => {
+      if (friend.userId === userId) {
+        friend.confirmed = true;
+        return friend;
+      }
+    });
+
+    const receiverFriends = await receiverFriendsArray.map((friend: any) => {
+      if (friend.userId === loggedInUser) {
+        friend.confirmed = true;
+        return friend;
+      }
+    });
+
+    setFriends(senderFriends);
+    await runTransaction(
+      senderRef,
+      receiverRef,
+      { friends: senderFriends },
+      { friends: receiverFriends },
+      db
+    );
+  }
+
+  async function deleteFriend(userId: string, indexToRemove: number) {
+    const senderRef = doc(db, "Users", loggedInUser);
+    const receiverRef = doc(db, "Users", userId);
+
+    const senderFriendsArray = await getFieldFromDocument(
+      senderRef,
+      "friends",
+      []
+    );
+    const receiverFriendsArray = await getFieldFromDocument(
+      receiverRef,
+      "friends",
+      []
+    );
+
+    const senderFriends = await senderFriendsArray.filter((friend: any) => {
+      if (friend.userId !== userId) {
+        return friend;
+      }
+    });
+
+    const receiverFriends = await receiverFriendsArray.filter((friend: any) => {
+      if (friend.userId !== loggedInUser) {
+        return friend;
+      }
+    });
+
+    setFriends(senderFriends);
+    setConfirmDelete((prevArray) =>
+      prevArray.filter((_, index) => index !== indexToRemove)
+    );
+    //setConfirmDelete(false);
+    // console.log(senderFriend, receiverFriend);
+    await runTransaction(
+      senderRef,
+      receiverRef,
+      { friends: senderFriends },
+      { friends: receiverFriends },
+      db
+    );
   }
 
   useEffect(() => {
@@ -209,7 +314,6 @@ export default function TabThreeScreen() {
                         </Text>
                       </View>
                     ) : (
-                      <View>
                         <Pressable
                           onPress={() =>
                             addFriend(result.userId, result.username)
@@ -218,7 +322,6 @@ export default function TabThreeScreen() {
                         >
                           <Text style={{ color: "white" }}>Add Friend</Text>
                         </Pressable>
-                      </View>
                     )}
                   </View>
                 </View>
@@ -227,7 +330,7 @@ export default function TabThreeScreen() {
           );
         })}
         <Text>Friends:</Text>
-        {friends.map((friend) => {
+        {friends.map((friend, index) => {
           return (
             <View
               style={{
@@ -254,6 +357,57 @@ export default function TabThreeScreen() {
                   <Text>
                     Friend confirmed: {friend.confirmed ? "Yes" : "No"}
                   </Text>
+                </View>
+                <View style={{ display: "flex", flexDirection: "column" }}>
+                  {friend.senderId !== loggedInUser &&
+                  friend.confirmed === false ? (
+                      <Pressable
+                        onPress={() => confirmFriend(friend.userId)}
+                        style={styles.button}
+                      >
+                        <Text style={{ color: "white" }}>Confirm Friend</Text>
+                      </Pressable>
+                  ) : null}
+                  {confirmDelete[index] ? (
+                    <View>
+                      <Pressable
+                        onPress={() => handleDelete(index, false)}
+                        style={styles.button}
+                      >
+                        <Text style={{ color: "white" }}>Cancel</Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => deleteFriend(friend.userId, index)}
+                        style={styles.button}
+                      >
+                        <Text style={{ color: "white" }}>Confirm</Text>
+                      </Pressable>
+                    </View>
+                  ) : (
+                      <Pressable
+                        onPress={() => handleDelete(index, true)}
+                        style={styles.button}
+                      >
+                        <Text style={{ color: "white" }}>Delete Friend</Text>
+                      </Pressable>
+                  )}
+                  {friend.chat ? (
+                    <Pressable
+                      onPress={() =>
+                        initializeChatSender(loggedInUser, friend.userId)
+                      }
+                      style={styles.button}
+                    >
+                      <Text style={{ color: "white" }}>Start Chat</Text>
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() => router.push(`/chat/${friend.chatRoomId}`)}
+                      style={styles.button}
+                    >
+                      <Text style={{ color: "white" }}>Chat</Text>
+                    </Pressable>
+                  )}
                 </View>
               </View>
             </View>
