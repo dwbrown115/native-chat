@@ -39,12 +39,12 @@ export default function LoginScreen() {
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        router.push("/one");
-      }
-    });
-    return unsubscribe;
+    // const unsubscribe = auth.onAuthStateChanged((user) => {
+    //   if (user) {
+    //     router.push("/one");
+    //   }
+    // });
+    // return unsubscribe;
   }, []);
 
   return (

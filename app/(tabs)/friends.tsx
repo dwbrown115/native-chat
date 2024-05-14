@@ -159,6 +159,7 @@ export default function TabThreeScreen() {
         userId: friend.userId,
         confirmed: friend.confirmed,
         profilePicture: data?.profilePicture,
+        chatRoomId: friend.chatRoomId,
       };
       setFriends((prev) => [...prev, friendData]);
     });
@@ -246,7 +247,7 @@ export default function TabThreeScreen() {
   }
 
   useEffect(() => {
-    console.log(friends);
+    // console.log(friends);
   }, [friends]);
 
   return (
@@ -307,21 +308,20 @@ export default function TabThreeScreen() {
                           {findObjectByValue(
                             friends,
                             result.userId,
-                            "confirmed"
                           )
                             ? "Yes"
                             : "No"}
                         </Text>
                       </View>
                     ) : (
-                        <Pressable
-                          onPress={() =>
-                            addFriend(result.userId, result.username)
-                          }
-                          style={styles.button}
-                        >
-                          <Text style={{ color: "white" }}>Add Friend</Text>
-                        </Pressable>
+                      <Pressable
+                        onPress={() =>
+                          addFriend(result.userId, result.username)
+                        }
+                        style={styles.button}
+                      >
+                        <Text style={{ color: "white" }}>Add Friend</Text>
+                      </Pressable>
                     )}
                   </View>
                 </View>
@@ -331,6 +331,7 @@ export default function TabThreeScreen() {
         })}
         <Text>Friends:</Text>
         {friends.map((friend, index) => {
+          // console.log(friend);
           return (
             <View
               style={{
@@ -361,12 +362,12 @@ export default function TabThreeScreen() {
                 <View style={{ display: "flex", flexDirection: "column" }}>
                   {friend.senderId !== loggedInUser &&
                   friend.confirmed === false ? (
-                      <Pressable
-                        onPress={() => confirmFriend(friend.userId)}
-                        style={styles.button}
-                      >
-                        <Text style={{ color: "white" }}>Confirm Friend</Text>
-                      </Pressable>
+                    <Pressable
+                      onPress={() => confirmFriend(friend.userId)}
+                      style={styles.button}
+                    >
+                      <Text style={{ color: "white" }}>Confirm Friend</Text>
+                    </Pressable>
                   ) : null}
                   {confirmDelete[index] ? (
                     <View>
@@ -384,12 +385,12 @@ export default function TabThreeScreen() {
                       </Pressable>
                     </View>
                   ) : (
-                      <Pressable
-                        onPress={() => handleDelete(index, true)}
-                        style={styles.button}
-                      >
-                        <Text style={{ color: "white" }}>Delete Friend</Text>
-                      </Pressable>
+                    <Pressable
+                      onPress={() => handleDelete(index, true)}
+                      style={styles.button}
+                    >
+                      <Text style={{ color: "white" }}>Delete Friend</Text>
+                    </Pressable>
                   )}
                   {friend.chat ? (
                     <Pressable
@@ -402,7 +403,9 @@ export default function TabThreeScreen() {
                     </Pressable>
                   ) : (
                     <Pressable
-                      onPress={() => router.push(`/chat/${friend.chatRoomId}`)}
+                      onPress={() => {
+                        router.push(`/chat/${friend.chatRoomId}`);
+                      }}
                       style={styles.button}
                     >
                       <Text style={{ color: "white" }}>Chat</Text>

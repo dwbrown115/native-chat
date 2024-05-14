@@ -117,16 +117,17 @@ export default async function initializeChatSender(
   const platform = await detectPlatform();
 
   if (platform === "web") {
-    const data = {
-      privateKey: keyPair.privateKey,
-      chatRoomId: chatRoomId,
-      keyId: keyId,
-      keyNumber: 1,
-    };
+    const data = [
+      {
+        privateKey: keyPair.privateKey,
+        chatRoomId: chatRoomId,
+        keyId: keyId,
+        keyNumber: 1,
+      },
+    ];
     await storeDataDB("localStorage", "chatRooms", "chatRoomId", data);
     console.log("Storing private key in web local storage");
   } else if (platform === "mobile") {
     console.log("Storing private key in mobile local storage");
   }
-
 }

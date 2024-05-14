@@ -5,7 +5,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
@@ -49,6 +49,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const { id } = useLocalSearchParams();
   const colorScheme = useColorScheme();
 
   return (
@@ -61,6 +62,14 @@ function RootLayoutNav() {
           options={{
             headerShown: false,
             headerTitle: "Sign In",
+            // cardStyle: { backgroundColor: "#f0f0f0" },
+          }}
+        />
+        <Stack.Screen
+          name={"chat"}
+          options={{
+            // title: `Chat ${id}`,
+            headerShown: false,
             // cardStyle: { backgroundColor: "#f0f0f0" },
           }}
         />
