@@ -6,19 +6,21 @@ import {
   runTransaction,
   getFieldFromDocument,
   addData,
+  updateData,
 } from "@/firebase";
 import { storeDataDB } from "@/localStorage";
 
 export default async function initializeChatSender(
   senderID: string,
-  receiverID: string
+  receiverID: string,
+  created: boolean,
+  chatRoomId: string,
 ) {
   const db = getFirestore(firebase_app);
   const ecdh_aesgcm = new ECDH_AESGCM();
 
   // Generate a key pair for the chat room
   const keyPair = await ecdh_aesgcm.generateKeyPair();
-  const chatRoomId = makeId(20);
   const keyId = makeId(20);
   console.log("Key Pair Generated and Chat Room ID Created");
 
@@ -96,22 +98,35 @@ export default async function initializeChatSender(
     db
   );
   console.log("Both Transactions Ran Successfully");
-
-  // create chatroom in firestore
-  const data = {
-    chatRoomId: chatRoomId,
-    members: [{ senderId: senderID }, { receiverId: receiverID }],
-    keys: [{ keyId: keyId, keyNumber: 1 }],
-    senderPublicKey: keyPair.publicKey,
-    initialized: false,
-    initializationSteps: [
-      { step: 1, doneBy: senderID, completed: true },
-      { step: 2, doneBy: receiverID, completed: false },
-      { step: 3, doneBy: senderID, completed: false },
-    ],
-  };
-  await addData("ChatRooms", chatRoomId, data);
-  console.log("Chat room created in firestore");
+  if (created === false) {
+    // create chatroom in firestore
+    const data = {
+      chatRoomId: chatRoomId,
+      members: [senderID, receiverID],
+      keys: [{ keyId: keyId, keyNumber: 1 }],
+      senderPublicKey: keyPair.publicKey,
+      initialized: false,
+      initializationSteps: [
+        { step: 1, doneBy: senderID, completed: true },
+        { step: 2, doneBy: receiverID, completed: false },
+        { step: 3, doneBy: senderID, completed: false },
+      ],
+    };
+    await addData("ChatRooms", chatRoomId, data);
+    console.log("Chat room created in firestore");
+  } else if (created === true) {
+    const data = {
+      senderPublicKey: keyPair.publicKey,
+      initialized: false,
+      initializationSteps: [
+        { step: 1, doneBy: senderID, completed: true },
+        { step: 2, doneBy: receiverID, completed: false },
+        { step: 3, doneBy: senderID, completed: false },
+      ],
+    };
+    await updateData("ChatRooms", chatRoomId, data);
+    console.log("Chatroom being reinitalized");
+  }
 
   // store the private key in local storage
   const platform = await detectPlatform();

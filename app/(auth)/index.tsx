@@ -6,6 +6,8 @@ import { getAuth } from "firebase/auth";
 import { signIn } from "@/firebase";
 import AuthStyles from "./authStyles";
 
+import { useEnterKeyPress } from "@/helpers";
+
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +29,11 @@ export default function LoginScreen() {
       console.log(error);
     }
   }
+
+  // useEnterKeyPress(() => {
+  //   // handleLogin();
+  // });
+
   function handleSignup() {
     // console.log("Signup");
     router.push("/signup");

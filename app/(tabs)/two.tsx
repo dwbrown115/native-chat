@@ -182,20 +182,28 @@ export default function TabTwoScreen() {
   }
 
   function handleInitailizeChatSender() {
+    const chatRoomId = makeId(20);
     initializeChatSender(
       "PIGC4UTHEdOw5bS4RgJjBQjVTEo2",
-      "s6GTjM8CV4YAR1AKpyEdiYCYaX52"
+      "s6GTjM8CV4YAR1AKpyEdiYCYaX52",
+      false,
+      chatRoomId
     );
   }
 
   function handleInitializeChatReciver() {
-    initializeChatReciver("9LidR9RVEzb7D2MzFzmh");
+    // initializeChatReciver(
+    //   "Or5WPo9hjWAQ5YEKB28P",
+    //   "PIGC4UTHEdOw5bS4RgJjBQjVTEo2",
+    //   "s6GTjM8CV4YAR1AKpyEdiYCYaX52"
+    // );
   }
 
   function handleCompleteInitializeChat() {
     completeInitializeChat(
-      "9LidR9RVEzb7D2MzFzmh",
-      "PIGC4UTHEdOw5bS4RgJjBQjVTEo2"
+      "Or5WPo9hjWAQ5YEKB28P",
+      "PIGC4UTHEdOw5bS4RgJjBQjVTEo2",
+      "s6GTjM8CV4YAR1AKpyEdiYCYaX52"
     );
   }
 

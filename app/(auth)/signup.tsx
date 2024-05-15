@@ -3,7 +3,7 @@ import { TextInput, Pressable, View, Text } from "react-native";
 import { router } from "expo-router";
 
 import { signUp } from "@/firebase";
-import { isPasswordValid } from "@/helpers";
+import { isPasswordValid, useEnterKeyPress } from "@/helpers";
 
 import AuthStyles from "./authStyles";
 
@@ -45,6 +45,10 @@ export default function SignUpScreen() {
       }
     }
   }
+
+  // useEnterKeyPress(() => {
+  //   // handleSignup();
+  // });
 
   function handleLogin() {
     // console.log("Login");

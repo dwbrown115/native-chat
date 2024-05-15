@@ -17,6 +17,7 @@ import {
   searchArrayForValue,
   findObjectByValue,
   initializeChatSender,
+  makeId,
 } from "@/helpers";
 import {
   runTransaction,
@@ -101,7 +102,7 @@ export default function TabThreeScreen() {
 
       const senderFriendData = {
         senderId: loggedInUser,
-        userName: userName,
+        username: userName,
         userId: userId,
         confirmed: false,
         chat: false,
@@ -160,6 +161,7 @@ export default function TabThreeScreen() {
         confirmed: friend.confirmed,
         profilePicture: data?.profilePicture,
         chatRoomId: friend.chatRoomId,
+        chat: friend.chat,
       };
       setFriends((prev) => [...prev, friendData]);
     });
@@ -247,7 +249,7 @@ export default function TabThreeScreen() {
   }
 
   useEffect(() => {
-    // console.log(friends);
+    console.log(friends);
   }, [friends]);
 
   return (
@@ -305,10 +307,7 @@ export default function TabThreeScreen() {
                       <View>
                         <Text>
                           Friend confirmed:{" "}
-                          {findObjectByValue(
-                            friends,
-                            result.userId,
-                          )
+                          {findObjectByValue(friends, result.userId)
                             ? "Yes"
                             : "No"}
                         </Text>
@@ -394,21 +393,28 @@ export default function TabThreeScreen() {
                   )}
                   {friend.chat ? (
                     <Pressable
-                      onPress={() =>
-                        initializeChatSender(loggedInUser, friend.userId)
-                      }
-                      style={styles.button}
-                    >
-                      <Text style={{ color: "white" }}>Start Chat</Text>
-                    </Pressable>
-                  ) : (
-                    <Pressable
                       onPress={() => {
                         router.push(`/chat/${friend.chatRoomId}`);
                       }}
                       style={styles.button}
                     >
                       <Text style={{ color: "white" }}>Chat</Text>
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() => {
+                        const chatRoomId = makeId(20);
+                        initializeChatSender(
+                          loggedInUser,
+                          friend.userId,
+                          false,
+                          chatRoomId
+                        );
+                        // router.push(`/chat/${chatRoomId}`);
+                      }}
+                      style={styles.button}
+                    >
+                      <Text style={{ color: "white" }}>Start Chat</Text>
                     </Pressable>
                   )}
                 </View>

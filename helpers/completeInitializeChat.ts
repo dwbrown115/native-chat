@@ -4,7 +4,8 @@ import { ECDH_AESGCM, detectPlatform } from "@/helpers";
 
 export default async function completeInitializeChat(
   chatRoomId: string,
-  userId: string
+  senderID: string,
+  receiverID: string
 ) {
   const ecdh_aesgcm = new ECDH_AESGCM();
 
@@ -65,6 +66,11 @@ export default async function completeInitializeChat(
     senderPublicKey: null,
     receiverPublicKey: null,
     initialized: true,
+    initializationSteps: [
+      { step: 1, doneBy: senderID, completed: true },
+      { step: 2, doneBy: receiverID, completed: true },
+      { step: 3, doneBy: senderID, completed: true },
+    ],
   };
   await updateData("ChatRooms", chatRoomId, data);
   console.log("Chat Room Updated Successfully");

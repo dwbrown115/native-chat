@@ -9,3 +9,4 @@ export { default as completeInitializeChat } from "./completeInitializeChat";
 export { default as handleSearch } from "./handleSearch"
 export { default as searchArrayForValue } from "./searchArrayForValue"
 export { default as findObjectByValue} from "./findObjectByValue"
+export { default as useEnterKeyPress } from "./useEnterKeyPress"

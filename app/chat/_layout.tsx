@@ -32,8 +32,9 @@ export default function ChatLayout() {
       if (user) {
         const data = await grabUser(user.uid);
         const friend = await findObjectByValue(data?.friends, id);
+        // console.log(friend);
 
-        setTitle(friend.userName);
+        setTitle(friend.username);
       }
     });
   }, []);
@@ -46,13 +47,6 @@ export default function ChatLayout() {
         },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          // headerShown: false,
-          title: "Friends",
-        }}
-      />
       <Tabs.Screen
         name="[id]"
         options={{
