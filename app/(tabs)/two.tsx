@@ -183,12 +183,12 @@ export default function TabTwoScreen() {
 
   function handleInitailizeChatSender() {
     const chatRoomId = makeId(20);
-    initializeChatSender(
-      "PIGC4UTHEdOw5bS4RgJjBQjVTEo2",
-      "s6GTjM8CV4YAR1AKpyEdiYCYaX52",
-      false,
-      chatRoomId
-    );
+   // initializeChatSender(
+      //"PIGC4UTHEdOw5bS4RgJjBQjVTEo2",
+     // "s6GTjM8CV4YAR1AKpyEdiYCYaX52",
+     // false,
+      // chatRoomId
+    //);
   }
 
   function handleInitializeChatReciver() {
@@ -240,7 +240,7 @@ export default function TabTwoScreen() {
           <Text style={styles.button}>Decrypt</Text>
         </Pressable>
         <Text>Decrypted text: {decryptedText}</Text>
-        <ImageInput exportImages={handleExportImages} />
+        <ImageInput exportImages={handleExportImages} allowMultiple={true} />
         {imageArray.map((image: any, index: number) => (
           <Image
             key={index}

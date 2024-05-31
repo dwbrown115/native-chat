@@ -96,9 +96,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="four"
+        name="profile"
         options={{
-          title: "Tab Four",
+          title: "Profile",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Pressable onPress={handleLogout}>

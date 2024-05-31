@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-export default function ImageInput({ exportImages }: any) {
+export default function ImageInput({ exportImages, allowMultiple }: any ) {
   // const [images, setImages] = useState<any>([]);
 
   useEffect(() => {
     // setImages([]);
+    console.log(allowMultiple, "allowMultiple")
   }, []);
 
   // useEffect(() => {
@@ -20,7 +21,7 @@ export default function ImageInput({ exportImages }: any) {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         aspect: [4, 3],
         quality: 1,
-        allowsMultipleSelection: true,
+        allowsMultipleSelection: allowMultiple,
       });
 
       if (!result.canceled) {
