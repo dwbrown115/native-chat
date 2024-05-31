@@ -5,14 +5,15 @@ import { getAuth } from "firebase/auth";
 import { doc, onSnapshot, getFirestore } from "firebase/firestore";
 
 import {
-  useEnterKeyPress,
+  // useEnterKeyPress,
   initializeChatSender,
   initializeChatReciver,
   completeInitializeChat,
+  detectPlatform,
 } from "@/helpers";
 // import { getData, listenForChanges } from "@/firebase";
 import { firebase_app } from "@/firebase";
-import { set } from "firebase/database";
+import { fetchAllDataDB } from "@/localStorage";
 
 export default function chatroom() {
   const db = getFirestore(firebase_app);
@@ -41,6 +42,33 @@ export default function chatroom() {
     }
   }
 
+  async function handleCheckForKey(object: any) {
+    const platform = detectPlatform();
+    const uid = getAuth().currentUser?.uid;
+
+    const reciver = object.members;
+
+    const index = reciver.indexOf(uid);
+    if (index > -1) {
+      reciver.splice(index, 1);
+    }
+
+    if (platform === "web") {
+      await fetchAllDataDB("localStorage", "chatRooms", id?.toString() ?? "")
+        .then((data) => {
+          console.log("Data: ", data);
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+          if (error) {
+          }
+        });
+    } else if (platform === "mobile") {
+      // const keys = await fetchData("ChatRoomKeys", "chatRoomId", "chatRoomId");
+      // console.log("Keys: ", keys);
+    }
+  }
+
   function checkInitialisation(object: any) {
     if (object.initialized === false) {
       setError("Chatroom not initialized");
@@ -66,7 +94,14 @@ export default function chatroom() {
 
     if (step1.completed === false) {
       console.log("Step 1 not completed");
-      initializeChatSender(uid ?? "", reciver[0], true, object.chatRoomId);
+      // initializeChatSender(uid ?? "", reciver[0], object.chatRoomId);
+      const doneBy = step1.doneBy;
+      if (doneBy !== uid) {
+        setError("Waiting on sender to complete step 1");
+      } else if (doneBy === uid) {
+        console.log("Step 1 being completed by sender");
+        initializeChatSender(uid ?? "", reciver[0], object.chatRoomId);
+      }
     } else if (step2.completed === false) {
       const doneBy = step2.doneBy;
       if (doneBy !== uid) {
@@ -108,6 +143,7 @@ export default function chatroom() {
         // setChatroom(data);
         console.log("Data found: ", data);
         checkInitialisation(data);
+        handleCheckForKey(data);
       } else {
         setError("No data found");
       }

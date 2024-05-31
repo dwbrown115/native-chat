@@ -16,8 +16,9 @@ import {
   handleSearch,
   searchArrayForValue,
   findObjectByValue,
-  initializeChatSender,
-  makeId,
+  // initializeChatSender,
+  // makeId,
+  createChatroom,
 } from "@/helpers";
 import {
   runTransaction,
@@ -403,13 +404,13 @@ export default function TabThreeScreen() {
                   ) : (
                     <Pressable
                       onPress={() => {
-                        const chatRoomId = makeId(20);
-                        initializeChatSender(
-                          loggedInUser,
-                          friend.userId,
-                          false,
-                          chatRoomId
-                        );
+                        createChatroom(loggedInUser, friend.userId);
+                        // initializeChatSender(
+                        //   loggedInUser,
+                        //   friend.userId,
+                        //   false,
+                        //   // chatRoomId
+                        // );
                         // router.push(`/chat/${chatRoomId}`);
                       }}
                       style={styles.button}

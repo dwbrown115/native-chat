@@ -5,7 +5,7 @@ import {
   firebase_app,
   runTransaction,
   getFieldFromDocument,
-  addData,
+  // addData,
   updateData,
 } from "@/firebase";
 import { storeDataDB } from "@/localStorage";
@@ -13,8 +13,8 @@ import { storeDataDB } from "@/localStorage";
 export default async function initializeChatSender(
   senderID: string,
   receiverID: string,
-  created: boolean,
-  chatRoomId: string,
+  // created: boolean,
+  chatRoomId: string
 ) {
   const db = getFirestore(firebase_app);
   const ecdh_aesgcm = new ECDH_AESGCM();
@@ -98,35 +98,37 @@ export default async function initializeChatSender(
     db
   );
   console.log("Both Transactions Ran Successfully");
-  if (created === false) {
-    // create chatroom in firestore
-    const data = {
-      chatRoomId: chatRoomId,
-      members: [senderID, receiverID],
-      keys: [{ keyId: keyId, keyNumber: 1 }],
-      senderPublicKey: keyPair.publicKey,
-      initialized: false,
-      initializationSteps: [
-        { step: 1, doneBy: senderID, completed: true },
-        { step: 2, doneBy: receiverID, completed: false },
-        { step: 3, doneBy: senderID, completed: false },
-      ],
-    };
-    await addData("ChatRooms", chatRoomId, data);
-    console.log("Chat room created in firestore");
-  } else if (created === true) {
-    const data = {
-      senderPublicKey: keyPair.publicKey,
-      initialized: false,
-      initializationSteps: [
-        { step: 1, doneBy: senderID, completed: true },
-        { step: 2, doneBy: receiverID, completed: false },
-        { step: 3, doneBy: senderID, completed: false },
-      ],
-    };
-    await updateData("ChatRooms", chatRoomId, data);
-    console.log("Chatroom being reinitalized");
-  }
+  // if (created === false) {
+  //   // create chatroom in firestore
+  //   const data = {
+  //     chatRoomId: chatRoomId,
+  //     members: [senderID, receiverID],
+  //     keys: [{ keyId: keyId, keyNumber: 1 }],
+  //     senderPublicKey: keyPair.publicKey,
+  //     initialized: false,
+  //     initializationSteps: [
+  //       { step: 1, doneBy: senderID, completed: true },
+  //       { step: 2, doneBy: receiverID, completed: false },
+  //       { step: 3, doneBy: senderID, completed: false },
+  //     ],
+  //   };
+  //   await addData("ChatRooms", chatRoomId, data);
+  //   console.log("Chat room created in firestore");
+  // } else if (created === true) {
+  console.log(
+    "Chatroom being updated with sender public key and initialization step 1"
+  );
+  const data = {
+    senderPublicKey: keyPair.publicKey,
+    initialized: false,
+    initializationSteps: [
+      { step: 1, doneBy: senderID, completed: true },
+      { step: 2, doneBy: receiverID, completed: false },
+      { step: 3, doneBy: senderID, completed: false },
+    ],
+  };
+  await updateData("ChatRooms", chatRoomId, data);
+  // }
 
   // store the private key in local storage
   const platform = await detectPlatform();
@@ -140,7 +142,7 @@ export default async function initializeChatSender(
         keyNumber: 1,
       },
     ];
-    await storeDataDB("localStorage", "chatRooms", "chatRoomId", data);
+    await storeDataDB("localStorage", "chatRooms", chatRoomId, data);
     console.log("Storing private key in web local storage");
   } else if (platform === "mobile") {
     console.log("Storing private key in mobile local storage");
