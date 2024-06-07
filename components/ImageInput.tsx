@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-export default function ImageInput({ exportImages, allowMultiple }: any ) {
+export default function ImageInput({ exportImages, allowMultiple, aspect, allowsEditing }: any) {
   // const [images, setImages] = useState<any>([]);
 
-  useEffect(() => {
-    // setImages([]);
-    console.log(allowMultiple, "allowMultiple")
-  }, []);
+  // useEffect(() => {
+  //   // setImages([]);
+  //   console.log(allowMultiple, "allowMultiple");
+  // }, []);
 
   // useEffect(() => {
   //   console.log("Image Input:", images);
@@ -19,7 +19,8 @@ export default function ImageInput({ exportImages, allowMultiple }: any ) {
       let result = await ImagePicker.launchImageLibraryAsync({
         // mediaTypes: ImagePicker.MediaTypeOptions.All,
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        aspect: [4, 3],
+        allowsEditing: allowsEditing,
+        aspect: aspect,
         quality: 1,
         allowsMultipleSelection: allowMultiple,
       });
@@ -29,6 +30,7 @@ export default function ImageInput({ exportImages, allowMultiple }: any ) {
         const ImageArray: any = [];
         result.assets.map((asset) => ImageArray.push(asset.uri));
         exportImages(ImageArray);
+        // console.log(typeof exportImages, "exportImages");
         // setImages((prevImages: any) => [...prevImages, ...image]);
         // return image;
         // exportImages(image);
@@ -67,5 +69,6 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     fontSize: 14,
     letterSpacing: 0.4,
+    textAlign: "center",
   },
 });

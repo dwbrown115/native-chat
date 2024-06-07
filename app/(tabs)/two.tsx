@@ -240,7 +240,7 @@ export default function TabTwoScreen() {
           <Text style={styles.button}>Decrypt</Text>
         </Pressable>
         <Text>Decrypted text: {decryptedText}</Text>
-        <ImageInput exportImages={handleExportImages} allowMultiple={true} />
+        <ImageInput exportImages={handleExportImages} allowMultiple={true} aspect={[4, 3]} allowsEditing={false} />
         {imageArray.map((image: any, index: number) => (
           <Image
             key={index}
